@@ -1310,6 +1310,26 @@ public class TileManager : MonoBehaviour
         };
     }
 
+    public Vector3[] GetNeighboursCornerCoordFromWorldPos(Vector3 worldPos)
+    {
+        Vector3Int cellPos =  gridProps.WorldToCell(worldPos);
+
+        return new Vector3[] {
+            gridProps.CellToWorld(
+                cellPos + Vector3Int.left
+            ),
+            gridProps.CellToWorld(
+                cellPos + Vector3Int.up
+            ),
+            gridProps.CellToWorld(
+                cellPos + Vector3Int.right
+            ),
+            gridProps.CellToWorld(
+                cellPos + Vector3Int.down
+            )
+        };
+    }
+
     public bool SetDirt(Vector3 worldPos, Vector3 playerPos, out Vector3Int cellPos)
     {
         cellPos =  gridProps.WorldToCell(worldPos);

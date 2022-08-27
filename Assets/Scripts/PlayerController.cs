@@ -288,7 +288,9 @@ public class PlayerController : DieableController
         }
 
         playerLayer = tileManager.GetLayerFromWorldPos(transform.position);
-        target.transform.position = tileManager.GetNeighboursCoordFromWorldPos(transform.position)[(int)faceDirection] + Vector3.up * 0.01f + Vector3.right * 0.01f;
+        target.transform.position = tileManager.GetNeighboursCornerCoordFromWorldPos(
+            transform.position
+        )[(int)faceDirection];
 
         CheckActiveEffects();
     }
