@@ -100,6 +100,8 @@ public class TileManager : MonoBehaviour
         // rnd = new RandomM((uint)Random.Range(14, 164824819));
     }
 
+    public uint seed;
+
     public void StartGen()
     {
         PreComputeExclusion();
@@ -224,7 +226,11 @@ public class TileManager : MonoBehaviour
 
     void Generate()
     {
-        rnd = new RandomM((uint)Random.Range(14, 164824819));
+        if (seed == 0)
+        {
+            seed = (uint)Random.Range(1000, 9999);
+        }
+        rnd = new RandomM(seed);
         while (presetsTilesQueue.Count > 0)
         {
             StopCoroutine(presetsTilesQueue.Dequeue());
@@ -1043,12 +1049,14 @@ public class TileManager : MonoBehaviour
                     continue;
                 }
 
+                int offset =  rnd.NextInt(0, 9999);
+
 
                 float xCoord = i / MapSize.x * scale;
                 float yCoord = j / MapSize.y * scale;
-                float treeSample = Mathf.PerlinNoise(xCoord, yCoord);
-                float bushSample = Mathf.PerlinNoise(xCoord + 500f, yCoord);
-                float flowerSample = Mathf.PerlinNoise(xCoord, yCoord + 500f);
+                float treeSample = Mathf.PerlinNoise(offset + xCoord, offset + yCoord);
+                float bushSample = Mathf.PerlinNoise(offset + xCoord + 500f, offset + yCoord);
+                float flowerSample = Mathf.PerlinNoise(offset + xCoord, offset + yCoord + 500f);
 
                 if (rnd.NextFloat(0f, 4f) <= treeSample)
                 // if (Random.Range(0f, 4f) <= treeSample)

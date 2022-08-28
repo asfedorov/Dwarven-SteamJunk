@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,7 +30,8 @@ public class AppController : MonoBehaviour
         Menu,
         About,
         Death,
-        Results
+        Results,
+        Seed
     }
 
     public TileManager tileManager;
@@ -53,9 +55,23 @@ public class AppController : MonoBehaviour
     public Button[] aboutButtons;
     public int activeAboutButtons;
 
+    public Button[] seedButtons;
+    public int activeSeedButtons;
+    enum SeedSection{
+        Buttons,
+        Numbers
+    }
+    SeedSection activeSeedSection = SeedSection.Buttons;
+    int activeNumber = 0;
+
+    public Color activeColor;
+    public Color notActiveColor;
+
     public Screen activeScreen = Screen.Menu;
 
     public Score score;
+
+    public TMP_Text[] seedText;
 
     public void Navigate(InputAction.CallbackContext context)
     {
@@ -74,6 +90,10 @@ public class AppController : MonoBehaviour
             {
                 AboutNavigation(moveInput);
             }
+            if (activeScreen == Screen.Seed)
+            {
+                SeedNavigation(moveInput);
+            }
         }
     }
 
@@ -88,6 +108,7 @@ public class AppController : MonoBehaviour
                 menuButtons[activeButton].transform.position.y,
                 menuButtons[activeButton].transform.position.z
             );
+            menuButtons[activeButton].GetComponentInChildren<TMP_Text>().color = notActiveColor;
 
             if (moveInput.y > 0)
             {
@@ -112,6 +133,7 @@ public class AppController : MonoBehaviour
                 menuButtons[activeButton].transform.position.y,
                 menuButtons[activeButton].transform.position.z
             );
+            menuButtons[activeButton].GetComponentInChildren<TMP_Text>().color = activeColor;
         }
     }
 
@@ -126,6 +148,7 @@ public class AppController : MonoBehaviour
                 aboutButtons[activeAboutButtons].transform.position.y - 2,
                 aboutButtons[activeAboutButtons].transform.position.z
             );
+            aboutButtons[activeAboutButtons].GetComponentInChildren<TMP_Text>().color = notActiveColor;
 
             if (moveInput.x > 0)
             {
@@ -150,6 +173,124 @@ public class AppController : MonoBehaviour
                 aboutButtons[activeAboutButtons].transform.position.y + 2,
                 aboutButtons[activeAboutButtons].transform.position.z
             );
+            aboutButtons[activeAboutButtons].GetComponentInChildren<TMP_Text>().color = activeColor;
+        }
+    }
+
+    void SeedNavigation(Vector2 moveInput)
+    {
+        if (moveInput.x != 0)
+        {
+            if (activeSeedSection == SeedSection.Buttons)
+            {
+                seedButtons[activeSeedButtons].transform.position = new Vector3(
+                    seedButtons[activeSeedButtons].transform.position.x,
+                    seedButtons[activeSeedButtons].transform.position.y - 2,
+                    seedButtons[activeSeedButtons].transform.position.z
+                );
+                seedButtons[activeSeedButtons].GetComponentInChildren<TMP_Text>().color = notActiveColor;
+
+                if (moveInput.x > 0)
+                {
+                    activeSeedButtons += 1;
+                }
+                else if (moveInput.x < 0)
+                {
+                    activeSeedButtons -= 1;
+                }
+
+                if (activeSeedButtons >= seedButtons.Length)
+                {
+                    activeSeedButtons = 0;
+                }
+                if (activeSeedButtons < 0)
+                {
+                    activeSeedButtons = seedButtons.Length - 1;
+                }
+
+                seedButtons[activeSeedButtons].transform.position = new Vector3(
+                    seedButtons[activeSeedButtons].transform.position.x,
+                    seedButtons[activeSeedButtons].transform.position.y + 2,
+                    seedButtons[activeSeedButtons].transform.position.z
+                );
+                seedButtons[activeSeedButtons].GetComponentInChildren<TMP_Text>().color = activeColor;
+            }
+            else
+            {
+                seedText[activeNumber].color = notActiveColor;
+                if (moveInput.x > 0)
+                {
+                    activeNumber += 1;
+                }
+                else if (moveInput.x < 0)
+                {
+                    activeNumber -= 1;
+                }
+                if (activeNumber >= seedText.Length)
+                {
+                    activeNumber = 0;
+                }
+                if (activeNumber < 0)
+                {
+                    activeNumber = seedText.Length - 1;
+                }
+                seedText[activeNumber].color = activeColor;
+            }
+        }
+
+        else if (moveInput.y != 0)
+        {
+            if (activeSeedSection == SeedSection.Buttons)
+            {
+                if ( moveInput.y > 0)
+                {
+                    activeSeedSection = SeedSection.Numbers;
+
+                    seedButtons[activeSeedButtons].transform.position = new Vector3(
+                        seedButtons[activeSeedButtons].transform.position.x,
+                        seedButtons[activeSeedButtons].transform.position.y - 2,
+                        seedButtons[activeSeedButtons].transform.position.z
+                    );
+                    seedButtons[activeSeedButtons].GetComponentInChildren<TMP_Text>().color = notActiveColor;
+
+                    seedText[activeNumber].color = activeColor;
+                }
+            }
+            else
+            {
+                int number = Int32.Parse(seedText[activeNumber].text);
+                if (moveInput.y > 0)
+                {
+                    number += 1;
+                }
+                else if (moveInput.y < 0)
+                {
+                    number -= 1;
+                }
+
+                if (number >= 10)
+                {
+                    if (activeNumber > 0)
+                    {
+                        number = 0;
+                    }
+                    else
+                    {
+                        number = 1;
+                    }
+                }
+                else if (number < 0)
+                {
+                    number = 9;
+                }
+
+                if (activeNumber == 0 && number == 0)
+                {
+                    number = 9;
+                }
+
+                seedText[activeNumber].text = number.ToString();
+            }
         }
     }
 
@@ -177,6 +318,24 @@ public class AppController : MonoBehaviour
             else if (activeScreen == Screen.Results)
             {
                 SceneManager.LoadScene("SampleScene");
+            }
+            else if (activeScreen == Screen.Seed)
+            {
+                if (activeSeedSection == SeedSection.Numbers)
+                {
+                    activeSeedSection = SeedSection.Buttons;
+                        seedButtons[activeSeedButtons].transform.position = new Vector3(
+                        seedButtons[activeSeedButtons].transform.position.x,
+                        seedButtons[activeSeedButtons].transform.position.y + 2,
+                        seedButtons[activeSeedButtons].transform.position.z
+                    );
+                    seedButtons[activeSeedButtons].GetComponentInChildren<TMP_Text>().color = activeColor;
+                    seedText[activeNumber].color = notActiveColor;
+                }
+                else
+                {
+                    seedButtons[activeSeedButtons].onClick.Invoke();
+                }
             }
         }
     }
@@ -227,6 +386,16 @@ public class AppController : MonoBehaviour
         menuScreen.SetActive(false);
         loadingScreen.SetActive(true);
 
+        tileManager.seed = (uint)Int32.Parse(
+            String.Format(
+                "{0}{1}{2}{3}",
+                seedText[0].text,
+                seedText[1].text,
+                seedText[2].text,
+                seedText[3].text
+            )
+        );
+
         tileManager.StartGen();
         StartCoroutine(WaitUntilInitialized());
     }
@@ -259,5 +428,17 @@ public class AppController : MonoBehaviour
             currentAboutSubscreens = 0;
         }
         aboutSubscreens[currentAboutSubscreens].SetActive(true);
+    }
+
+    public void RegenSeed()
+    {
+        uint seed = (uint)UnityEngine.Random.Range(1000, 9999);
+
+        string seedString = seed.ToString();
+
+        for (int i = 0; i < seedText.Length; i++)
+        {
+            seedText[i].text = seedString[i].ToString();
+        }
     }
 }
