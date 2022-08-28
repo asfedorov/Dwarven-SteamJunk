@@ -188,6 +188,17 @@
                 },
                 {
                     "name": "",
+                    "id": "523afe32-d48f-45ee-bb5f-cf5475bab2f8",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "8180162f-91f8-4f06-b2a7-b78747ad2af7",
                     "path": "<Keyboard>/k",
                     "interactions": "",
@@ -204,6 +215,17 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
+                    "action": "DigMode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "944d3615-fb3d-4b09-852f-1ae3b849427a",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
                     "action": "DigMode",
                     "isComposite": false,
                     "isPartOfComposite": false

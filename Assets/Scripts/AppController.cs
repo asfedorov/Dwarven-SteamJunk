@@ -73,6 +73,9 @@ public class AppController : MonoBehaviour
 
     public TMP_Text[] seedText;
 
+    public TMP_Text seedTextDeath;
+    public TMP_Text seedTextResult;
+
     public void Navigate(InputAction.CallbackContext context)
     {
         Debug.Log("bong");
@@ -345,6 +348,7 @@ public class AppController : MonoBehaviour
         playerInput.SwitchCurrentActionMap("UI");
         deathScreen.SetActive(true);
         activeScreen = Screen.Death;
+        seedTextDeath.text = tileManager.seed.ToString();
     }
 
     void Awake()
@@ -414,6 +418,8 @@ public class AppController : MonoBehaviour
         traps.text = $"{trapsScore}";
         junk.text = $"{junkScore}";
         total.text = $"{utilizedScore + trapsScore + junkScore}";
+
+        seedTextResult.text = tileManager.seed.ToString();
     }
 
     public GameObject[] aboutSubscreens;
